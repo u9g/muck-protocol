@@ -1,6 +1,5 @@
 node_modules
 *.json
-read.js
-write.js
-size.js
+data/latest/ToClient
+data/latest/ToServer
 !package.json

@@ -1,12 +1,11 @@
 const { parse, compile } = require('protodef-yaml/compiler')
-const { ProtoDefCompiler } = require('protodef').Compiler
+const { join } = require('path')
 const fs = require('fs')
-const FILE_NAME = './protoToServer.yml'
-const TYPES_FILE_NAME = './types.yml'
+const { ProtoDefCompiler } = require('protodef').Compiler
 
-function start () {
-  const madeTypes = Object.keys(parse(TYPES_FILE_NAME)).map(o => o.match(/%container,(.+),/)).filter(o => o).map(o => o[1])
-  const parsed = parse(FILE_NAME)
+function makeSide (fileName, outPath, ymlPath) {
+  const madeTypes = Object.keys(parse(join(ymlPath, 'types.yml'))).map(o => o.match(/%container,(.+),/)).filter(o => o).map(o => o[1])
+  const parsed = parse(join(ymlPath, fileName))
 
   const typesUsed = [...new Set(Object.entries(parsed)
     .filter(r => !r[0].startsWith('!'))
@@ -40,8 +39,8 @@ function start () {
       return acc
     }, {})
 
-  const comped = compileThis(FILE_NAME)
-  const compedTypes = compileThis(TYPES_FILE_NAME)
+  const comped = compileThis(join(ymlPath, fileName))
+  const compedTypes = compileThis(join(ymlPath, 'types.yml'))
 
   const toRet = {
     types: {
@@ -53,19 +52,20 @@ function start () {
       ...comped
     }
   }
-  fs.writeFileSync(FILE_NAME.replace('yml', 'json'), JSON.stringify(toRet, null, 2))
-  createProtocol()
+  const outProtocol = join(ymlPath, fileName).replace('yml', 'json')
+  fs.writeFileSync(outProtocol, JSON.stringify(toRet, null, 2))
+  createProtocol(outProtocol, outPath)
 }
 
 // Compile the ProtoDef JSON into JS
-function createProtocol () {
+function createProtocol (fileName, outPath) {
   const compiler = new ProtoDefCompiler()
-  const protocol = JSON.parse(fs.readFileSync(FILE_NAME.replace('yml', 'json'), 'utf-8')).types
+  const protocol = JSON.parse(fs.readFileSync(fileName, 'utf-8')).types
   compiler.addTypesToCompile(protocol)
 
-  fs.writeFileSync('./read.js', 'module.exports = ' + compiler.readCompiler.generate().replace('() =>', 'native =>'))
-  fs.writeFileSync('./write.js', 'module.exports = ' + compiler.writeCompiler.generate().replace('() =>', 'native =>'))
-  fs.writeFileSync('./size.js', 'module.exports = ' + compiler.sizeOfCompiler.generate().replace('() =>', 'native =>'))
+  fs.writeFileSync(join(outPath, 'read.js'), 'module.exports = ' + compiler.readCompiler.generate().replace('() =>', 'native =>'))
+  fs.writeFileSync(join(outPath, 'write.js'), 'module.exports = ' + compiler.writeCompiler.generate().replace('() =>', 'native =>'))
+  fs.writeFileSync(join(outPath, 'size.js'), 'module.exports = ' + compiler.sizeOfCompiler.generate().replace('() =>', 'native =>'))
 
   const compiledProto = compiler.compileProtoDefSync()
   return compiledProto
@@ -79,4 +79,12 @@ function compileThis (fileName) {
   return data
 }
 
-start()
+function main () {
+  const folderPath = join('data', 'latest')
+  for (const side of ['ToServer', 'ToClient']) {
+    const sideFolderPath = join(folderPath, side)
+    try { fs.mkdirSync(sideFolderPath) } catch (err) {}
+    makeSide(`proto${side}.yml`, sideFolderPath, folderPath)
+  }
+}
+main()
