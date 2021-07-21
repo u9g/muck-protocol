@@ -6,25 +6,33 @@ const TYPES_FILE_NAME = './types.yml'
 function start () {
   const madeTypes = Object.keys(parse(TYPES_FILE_NAME)).map(o => o.match(/%container,(.+),/)).filter(o => o).map(o => o[1])
   const parsed = parse(FILE_NAME)
-  const typesUsed = {}
-  ;[...new Set(Object.entries(parsed)
+
+  const typesUsed = [...new Set(Object.entries(parsed)
+    .filter(r => !r[0].startsWith('!'))
     .map(packet => Object.entries(packet[1]))
     .flat(1)
     .filter(o => !o[0].startsWith('!'))
-    .map(o => o[1]))]
+    .map(o => o[1])
+    .filter(o => typeof o === 'string'))]
     .filter(o => !madeTypes.includes(o))
-    .forEach(o => { typesUsed[o] = 'native' })
+    .reduce((acc, curr) => {
+      acc[curr] = 'native'
+      return acc
+    }, {})
 
-  const packetIds = Object.entries(parsed).map(o => {
-    const name = o[0].match(/%container,packet_(.+),/)[1]
-    const id = o[1]['!id']
-    return { name, id }
-  }).reduce((acc, curr) => {
-    acc[curr.id] = curr.name
-    return acc
-  }, {})
+  const packetIds = Object.entries(parsed)
+    .filter(r => !r[0].startsWith('!'))
+    .map(o => {
+      const name = o[0].match(/%container,packet_(.+),/)[1]
+      const id = o[1]['!id']
+      return { name, id }
+    }).reduce((acc, curr) => {
+      acc[curr.id] = curr.name
+      return acc
+    }, {})
 
   const params = Object.entries(parsed)
+    .filter(r => !r[0].startsWith('!'))
     .map(o => o[0].match(/%container,packet_(.+),/)[1])
     .reduce((acc, curr) => {
       acc[curr] = `packet_${curr}`

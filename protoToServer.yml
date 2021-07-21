@@ -1,3 +1,7 @@
+!version: 1.26
+
+!StartDocs: Packets
+
 packet_welcome_received:
   !id: 1
   !bound: server

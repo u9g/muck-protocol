@@ -1,10 +1,5 @@
 !version: 1.26
 
-i32: native
-f32: native
-
-!import: types.yml
-
 !StartDocs: Packets
 
 # droppedResourceId: 
@@ -100,7 +95,7 @@ packet_open_door:
 packet_ready:
   !id: 15
   !bound: client
-  clientId: int32
+  clientId: i32
   ready: bool
 
 packet_task_progress:
