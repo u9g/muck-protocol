@@ -1,0 +1,203 @@
+packet_welcome_received:
+  !id: 1
+  !bound: server
+  clientId: i32
+  username: string
+  red: f32
+  green: f32
+  blue: f32
+
+packet_join_lobby:
+  !id: 2
+  !bound: server
+  username: string
+
+packet_player_position:
+  !id: 3
+  !bound: server
+  pos: vec3
+
+packet_player_rotation:
+  !id: 4
+  !bound: server
+  yOrientation: f32
+  xOrientation: f32
+
+packet_send_disconnect:
+  !id: 5
+  !bound: server
+
+packet_send_ping:
+  !id: 6
+  !bound: server
+  ms: string
+
+# unused
+packet_player_killed:
+  !id: 7
+  !bound: server
+
+packet_ready:
+  !id: 8
+  !bound: server
+  ready: bool
+
+# not implemented!
+packet_request_spawns:
+  !id: 9
+  !bound: server
+
+packet_drop_item:
+  !id: 10
+  !bound: server
+  itemType: i32
+  amount: i32
+
+packet_drop_item_at_position:
+  !id: 11
+  !bound: server
+  itemType: i32
+  amount: i32
+  pos: vec3
+
+packet_pickup_item:
+  !id: 12
+  !bound: server
+  itemType: i32
+
+packet_weapon_in_hand:
+  !id: 13
+  !bound: server
+  itemType: i32
+
+packet_player_hit_object:
+  !id: 14
+  !bound: server
+  damageDone: i32
+  resourceId: i32
+  hitEffect: i32
+  pos: vec3
+
+# toggle works for animations that happen many times, like eating, unlike one time animations like sword hit
+packet_animation_update:
+  !id: 15
+  !bound: server
+  animation: i32
+  toggle: bool
+
+packet_request_build:
+  !id: 16
+  !bound: server
+  itemType: i32
+  pos: vec3
+  yRot: i32
+
+# open is whether to open or close the chest
+packet_request_chest:
+  !id: 17
+  !bound: server
+  chestId: i32
+  open: bool
+
+packet_update_chest:
+  !id: 18
+  !bound: server
+  chestId: i32
+  cellId: i32
+  itemType: i32
+  amount: i32
+
+packet_pickup_interact:
+  !id: 19
+  !bound: server
+  resourceId: i32
+
+packet_player_hit:
+  !id: 20
+  !bound: server
+  baseDamage: i32
+  clientId: i32
+  sharpness: f32
+  pos: vec3
+
+packet_player_damage_mob:
+  !id: 21
+  !bound: server
+  mobId: i32
+  damage: i32
+  sharpness: f32
+  hitEffect: i32
+  pos: vec3
+
+packet_shrine_combat_start:
+  !id: 22
+  !bound: server
+  resourceId: i32
+
+packet_send_chat_message:
+  !id: 23
+  !bound: server
+  msg: string
+
+packet_player_ping:
+  !id: 24
+  !bound: server
+  pos: vec3
+
+packet_send_armor:
+  !id: 25
+  !bound: server
+  armorSlot: i32
+  itemType: i32
+
+packet_player_hp:
+  !id: 26
+  !bound: server
+  currentHp: i32
+  maxHp: i32
+
+packet_player_died:
+  !id: 27
+  !bound: server
+
+# arrowId is really an itemType
+packet_shoot_arrow:
+  !id: 28
+  !bound: server
+  pos: vec3
+  rot: vec3
+  force: f32
+  arrowId: i32
+
+packet_finished_loading:
+  !id: 29
+  !bound: server
+
+packet_spawn_effect:
+  !id: 30
+  !bound: server
+  effectId: i32
+  pos: vec3
+
+# when useGrave is true, it will use a grave, if useGrave is false, it will review with money
+packet_revive_request:
+  !id: 31
+  !bound: server
+  clientId: i32
+  useGrave: bool
+  resourceId: i32
+
+packet_interact:
+  !id: 32
+  !bound: server
+  resourceId: i32
+
+packet_started_loading:
+  !id: 33
+  !bound: server
+
+packet_ship_update:
+  !id: 34
+  !bound: server
+  type: i32
+  interactId: i32

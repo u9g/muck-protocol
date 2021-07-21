@@ -1,0 +1,394 @@
+!version: 1.26
+
+i32: native
+f32: native
+
+!import: types.yml
+
+!StartDocs: Packets
+
+# droppedResourceId: 
+#   when an item is dropped, this is made
+#   when an item is picked up, this id is destroyed from client
+
+packet_welcome:
+  !id: 1
+  !bound: client
+  welcomeMessage: string
+  clock: f32
+  clientId: i32
+
+packet_spawn_player:
+  !id: 2
+  !bound: client
+  clientId: i32
+
+packet_player_position:
+  !id: 3
+  !bound: client
+  clientId: i32
+  pos: vec3
+
+packet_player_rotation:
+  !id: 4
+  !bound: client
+  clientId: i32
+  orientationY: f32
+  orientationX: f32
+
+packet_player_disconnect:
+  !id: 5
+  !bound: client
+  clientId: i32
+
+# pos will be the position of the grave
+packet_player_died:
+  !id: 6
+  !bound: client
+  clientId: i32
+  pos: vec3
+
+packet_ping_player:
+  !id: 7
+  !bound: client
+  pos: vec3
+  username: string
+
+packet_connection_successful:
+  !id: 8
+  !bound: client
+
+# unused
+packet_send_level:
+  !id: 9
+  !bound: client
+
+packet_send_status:
+  !id: 10
+  !bound: client
+
+# id of winner
+packet_game_over:
+  !id: 11
+  !bound: client
+  clientId: i32
+
+packet_start_game:
+  !id: 12
+  !bound: client
+  clientId: i32
+  seed: i32
+  friendlyFire: i32
+  difficulty: i32
+  gameLength: i32
+  multiplayer: i32
+  players: []i32
+      clientId: i32
+      username: string
+
+packet_clock:
+  !id: 13
+  !bound: client
+  clientId: i32
+
+# there are no doors in the game !
+packet_open_door:
+  !id: 14
+  !bound: client
+  resourceId: i32
+
+packet_ready:
+  !id: 15
+  !bound: client
+  clientId: int32
+  ready: bool
+
+packet_task_progress:
+  !id: 16
+  !bound: client
+
+packet_drop_item:
+  !id: 17
+  !bound: client
+  clientId: i32
+  itemType: i32
+  amount: i32
+  droppedResourceId: i32
+
+packet_pickup_item:
+  !id: 18
+  !bound: client
+  clientId: i32
+  droppedResourceId: i32
+
+packet_weapon_in_hand:
+  !id: 19
+  !bound: client
+  clientId: i32
+  itemType: i32
+
+packet_player_hit_object:
+  !id: 20
+  !bound: client
+  clientId: i32
+  resourceId: i32
+  newHp: i32
+  hitEffect: i32
+  pos: vec3
+
+packet_drop_resources:
+  !id: 21
+  !bound: client
+  clientId: i32
+  droppedResourceId: i32
+  itemType: i32
+
+# toggle works for animations that happen many times, like eating, unlike one time animations like sword hit
+packet_animation_update:
+  !id: 22
+  !bound: client
+  clientId: i32
+  animation: i32
+  toggle: bool
+
+# clientId is the buildOwner
+packet_finalize_build:
+  !id: 23
+  !bound: client
+  clientId: i32
+  itemType: i32
+  resourceId: i32
+  pos: vec3
+  yRot: i32
+
+# open is whether the chest is open or closed
+packet_open_chest:
+  !id: 24
+  !bound: client
+  clientId: i32
+  chestId: i32
+  open: bool
+
+packet_update_chest:
+  !id: 25
+  !bound: client
+  clientId: i32
+  chestId: i32
+  cellId: i32
+  itemType: i32
+  amount: i32
+
+packet_pickup_interact:
+  !id: 26
+  !bound: client
+  clientId: i32
+  resourceId: i32
+
+packet_drop_item_at_position:
+  !id: 27
+  !bound: client
+
+packet_player_hit:
+  !id: 28
+  !bound: client
+  itemType: i32
+  amount: i32
+  droppedResourceId: i32
+  pos: vec3
+
+packet_mob_spawn:
+  !id: 29
+  !bound: client
+  pos: vec3
+  mobType: i32
+  mobId: i32
+  multiplier: f32
+  bossMultiplier: f32
+  guardianType: i32
+
+packet_mob_move:
+  !id: 30
+  !bound: client
+  mobId: i32
+  pos: vec3
+
+packet_mob_set_destination:
+  !id: 31
+  !bound: client
+  mobId: i32
+  destination: vec3 
+
+# clientId is the targetPlayerId
+packet_mob_attack:
+  !id: 32
+  !bound: client
+  mobId: i32
+  clientId: i32
+  attackAnimationIndex: i32
+
+packet_player_damage_mob:
+  !id: 33
+  !bound: client
+  clientId: i32
+  mobId: i32
+  mobHpLeft: i32
+  hitEffect: i32
+  pos: vec3
+
+packet_shrine_combat_start:
+  !id: 34
+  !bound: client
+  resourceId: i32
+  mobIds: i32[]i32
+
+packet_drop_powerup_at_position:
+  !id: 35
+  !bound: client
+  powerupId: i32
+  droppedResourceId: i32
+  pos: vec3
+
+# same interface as pickup_zone_spawn, handled identically
+packet_mob_zone_spawn:
+  !id: 36
+  !bound: client
+  pos: vec3
+  mobType: i32
+  mobId: i32
+  spawnZoneId: i32
+
+packet_mob_zone_toggle:
+  !id: 37
+  !bound: client
+  visible: bool
+  mobZoneId: i32
+
+# same interface as mob_zone_spawn, handled identically
+packet_pickup_zone_spawn:
+  !id: 38
+  !bound: client
+  pos: vec3
+  itemType: i32
+  resourceId: i32
+  spawnZoneId: i32
+
+# clientId: user that sent the message
+# username: username of player that sent message
+packet_send_message:
+  !id: 39
+  !bound: client
+  clientId: i32
+  username: string
+  message: string
+
+packet_player_ping:
+  !id: 40
+  !bound: client
+  pos: vec3
+  name: string
+
+packet_send_armor:
+  !id: 41
+  !bound: client
+  clientId: i32
+  armorSlot: i32
+  itemType: i32
+
+packet_player_hp:
+  !id: 42
+  !bound: client
+  clientId: i32
+  hpRatio: f32
+
+# pos not used
+packet_respawn_player:
+  !id: 43
+  !bound: client
+  clientId: i32
+  pos: vec3
+
+# itemType, but will throw if not the id of an arrow
+packet_shoot_arrow:
+  !id: 44
+  !bound: client
+  spawnPos: vec3
+  direction: vec3
+  force: f32
+  itemType: i32
+  clientId: i32
+
+packet_remove_resource:
+  !id: 45
+  !bound: client
+  resourceId: i32
+
+packet_mob_projectile:
+  !id: 46
+  !bound: client
+  spawnPos: vec3
+  direction: vec3
+  force: f32
+  itemType: i32
+  mobId: i32
+
+packet_new_day:
+  !id: 47
+  !bound: client
+  day: i32
+
+packet_knockback_mob:
+  !id: 48
+  !bound: client
+  mobId: i32
+  direction: vec3
+
+packet_spawn_effect:
+  !id: 49
+  !bound: client
+  effectId: i32
+  pos: vec3
+
+packet_player_finished_loading:
+  !id: 50
+  !bound: client
+  clientId: i32
+
+# resource id is the resource id of the grave, if useGrave is true, otherwise it's -1
+packet_revive_player:
+  !id: 51
+  !bound: client
+  clientId: i32
+  revivedClientId: i32
+  useGrave: bool
+  resourceId: i32
+
+packet_spawn_grave:
+  !id: 52
+  !bound: client
+  clientId: i32
+  resourceId: i32
+  pos: i32
+
+# clientId represents the player to target
+packet_interact:
+  !id: 53
+  !bound: client
+  resourceId: i32
+  clientId: i32
+
+packet_set_target:
+  !id: 54
+  !bound: client
+  mobId: i32
+  clientId: i32
+
+packet_ship_update:
+  !id: 55
+  !bound: client
+  packetType: i32
+  resourceId: i32
+
+packet_dragon_update:
+  !id: 56
+  !bound: client
+  dragonState: i32
