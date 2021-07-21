@@ -1,5 +1,6 @@
 {
   "dependencies": {
+    "protodef": "^1.14.0",
     "protodef-yaml": "^1.2.2"
   }
 }

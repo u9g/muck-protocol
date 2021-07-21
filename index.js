@@ -1,4 +1,5 @@
 const { parse, compile } = require('protodef-yaml/compiler')
+const { ProtoDefCompiler } = require('protodef').Compiler
 const fs = require('fs')
 const FILE_NAME = './protoToServer.yml'
 const TYPES_FILE_NAME = './types.yml'
@@ -43,14 +44,31 @@ function start () {
   const compedTypes = compileThis(TYPES_FILE_NAME)
 
   const toRet = {
-    types: typesUsed,
-    ...compedTypes,
-    muck_packet: ['container',
-      [{ name: 'name', type: ['mapper', { type: 'varint', mappings: packetIds }] }],
-      [{ name: 'params', type: ['switch', { compareTo: 'name', fields: params }] }]],
-    ...comped
+    types: {
+      ...typesUsed,
+      ...compedTypes,
+      muck_packet: ['container',
+        [{ name: 'name', type: ['mapper', { type: 'varint', mappings: packetIds }] }],
+        [{ name: 'params', type: ['switch', { compareTo: 'name', fields: params }] }]],
+      ...comped
+    }
   }
   fs.writeFileSync(FILE_NAME.replace('yml', 'json'), JSON.stringify(toRet, null, 2))
+  createProtocol()
+}
+
+// Compile the ProtoDef JSON into JS
+function createProtocol () {
+  const compiler = new ProtoDefCompiler()
+  const protocol = JSON.parse(fs.readFileSync(FILE_NAME.replace('yml', 'json'), 'utf-8')).types
+  compiler.addTypesToCompile(protocol)
+
+  fs.writeFileSync('./read.js', 'module.exports = ' + compiler.readCompiler.generate().replace('() =>', 'native =>'))
+  fs.writeFileSync('./write.js', 'module.exports = ' + compiler.writeCompiler.generate().replace('() =>', 'native =>'))
+  fs.writeFileSync('./size.js', 'module.exports = ' + compiler.sizeOfCompiler.generate().replace('() =>', 'native =>'))
+
+  const compiledProto = compiler.compileProtoDefSync()
+  return compiledProto
 }
 
 function compileThis (fileName) {
